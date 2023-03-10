@@ -71,7 +71,21 @@ func createTask(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(task)
 }
 func deleteTask(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("i'm homepage")
+	w.Header().Set("Content-type", "application/json")
+	params := mux.Vars(r)
+	flag := false
+	for index, item := range tasks {
+		if item.ID == params["id"] {
+			fmt.Println("This id is", item.ID)
+			tasks = append(tasks[:index], tasks[index+1:]...)
+			flag = true
+			json.NewEncoder(w).Encode(map[string]string{"status": "Deleted"})
+			return
+		}
+	}
+	if flag == false {
+		json.NewEncoder(w).Encode(map[string]string{"status": "Error"})
+	}
 }
 func updateTask(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-type", "application/json")
@@ -101,11 +115,11 @@ func handleRoutes() {
 	router := mux.NewRouter()
 
 	router.HandleFunc("/", homePage).Methods("GET")
-	router.HandleFunc("/gettask/{id}", gettask).Methods("GET")
+	router.HandleFunc("/gettask/", gettask).Queries("id", "{id}").Methods("GET")
 	router.HandleFunc("/gettasks", getTasks).Methods("GET")
 	router.HandleFunc("/create", createTask).Methods("POST")
-	router.HandleFunc("/delete/{id}", deleteTask).Methods("DELETE")
-	router.HandleFunc("/update/{id}", updateTask).Methods("PUT")
+	router.HandleFunc("/delete/", deleteTask).Queries("id", "{id}").Methods("DELETE")
+	router.HandleFunc("/update/", updateTask).Queries("id", "{id}").Methods("PUT")
 	log.Fatal(http.ListenAndServe(":8082", router))
 }
 
