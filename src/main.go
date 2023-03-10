@@ -74,7 +74,27 @@ func deleteTask(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("i'm homepage")
 }
 func updateTask(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("i'm homepage")
+	w.Header().Set("Content-type", "application/json")
+	params := mux.Vars(r)
+	flag := false
+	for index, item := range tasks {
+		if item.ID == params["id"] {
+			fmt.Println("This id is", item.ID)
+			tasks = append(tasks[:index], tasks[index+1:]...)
+			var task Tasks
+			_ = json.NewDecoder(r.Body).Decode(&task)
+			task.ID = params["id"]
+			currentTime := time.Now().Format("01-02-2006")
+			task.Date = currentTime
+			tasks = append(tasks, task)
+			flag = true
+			json.NewEncoder(w).Encode(task)
+			return
+		}
+	}
+	if flag == false {
+		json.NewEncoder(w).Encode(map[string]string{"status": "Error"})
+	}
 }
 
 func handleRoutes() {
@@ -85,7 +105,7 @@ func handleRoutes() {
 	router.HandleFunc("/gettasks", getTasks).Methods("GET")
 	router.HandleFunc("/create", createTask).Methods("POST")
 	router.HandleFunc("/delete/{id}", deleteTask).Methods("DELETE")
-	router.HandleFunc("/update/{id}", updateTask).Methods("GET")
+	router.HandleFunc("/update/{id}", updateTask).Methods("PUT")
 	log.Fatal(http.ListenAndServe(":8082", router))
 }
 
