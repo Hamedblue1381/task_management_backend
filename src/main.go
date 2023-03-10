@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"math/rand"
 	"net/http"
@@ -24,23 +23,23 @@ var tasks []Tasks
 func allTasks() {
 	task := Tasks{
 		ID:         "1",
-		TaskName:   "New project",
-		TaskDetail: "i'm backend bro",
+		TaskName:   "Your first task",
+		TaskDetail: "Makes your first ever task by using the 'Add Task' button",
 		Date:       "2023-05-03",
 	}
 	tasks = append(tasks, task)
-	fmt.Println("your tasks are :\n", tasks)
-	task1 := Tasks{
-		ID:         "2",
-		TaskName:   "Reza",
-		TaskDetail: "i'm reza sister",
-		Date:       "2023-05-03",
-	}
-	tasks = append(tasks, task1)
-	fmt.Println("your tasks are :", tasks)
+	// fmt.Println("your tasks are :\n", tasks)
+	// task1 := Tasks{
+	// 	ID:         "2",
+	// 	TaskName:   "Reza",
+	// 	TaskDetail: "i'm reza sister",
+	// 	Date:       "2023-05-03",
+	// }
+	// tasks = append(tasks, task1)
+	// fmt.Println("your tasks are :", tasks)
 }
 func homePage(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("i'm homepage")
+	// fmt.Println("i'm homepage")
 }
 func gettask(w http.ResponseWriter, r *http.Request) {
 	taskId := mux.Vars(r)
@@ -76,7 +75,7 @@ func deleteTask(w http.ResponseWriter, r *http.Request) {
 	flag := false
 	for index, item := range tasks {
 		if item.ID == params["id"] {
-			fmt.Println("This id is", item.ID)
+			// fmt.Println("This id is", item.ID)
 			tasks = append(tasks[:index], tasks[index+1:]...)
 			flag = true
 			json.NewEncoder(w).Encode(map[string]string{"status": "Deleted"})
@@ -93,7 +92,7 @@ func updateTask(w http.ResponseWriter, r *http.Request) {
 	flag := false
 	for index, item := range tasks {
 		if item.ID == params["id"] {
-			fmt.Println("This id is", item.ID)
+			// fmt.Println("This id is", item.ID)
 			tasks = append(tasks[:index], tasks[index+1:]...)
 			var task Tasks
 			_ = json.NewDecoder(r.Body).Decode(&task)
