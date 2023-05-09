@@ -24,19 +24,11 @@ func allTasks() {
 	task := Tasks{
 		ID:         "1",
 		TaskName:   "Your first task",
-		TaskDetail: "Makes your first ever task by using the 'Add Task' button",
+		TaskDetail: "Makes your first task by using the 'Add Task' button",
 		Date:       "2023-05-03",
 	}
 	tasks = append(tasks, task)
-	// fmt.Println("your tasks are :\n", tasks)
-	// task1 := Tasks{
-	// 	ID:         "2",
-	// 	TaskName:   "Reza",
-	// 	TaskDetail: "i'm reza sister",
-	// 	Date:       "2023-05-03",
-	// }
-	// tasks = append(tasks, task1)
-	// fmt.Println("your tasks are :", tasks)
+
 }
 func homePage(w http.ResponseWriter, r *http.Request) {
 	// fmt.Println("i'm homepage")
@@ -75,7 +67,6 @@ func deleteTask(w http.ResponseWriter, r *http.Request) {
 	flag := false
 	for index, item := range tasks {
 		if item.ID == params["id"] {
-			// fmt.Println("This id is", item.ID)
 			tasks = append(tasks[:index], tasks[index+1:]...)
 			flag = true
 			json.NewEncoder(w).Encode(map[string]string{"status": "Deleted"})
@@ -92,7 +83,6 @@ func updateTask(w http.ResponseWriter, r *http.Request) {
 	flag := false
 	for index, item := range tasks {
 		if item.ID == params["id"] {
-			// fmt.Println("This id is", item.ID)
 			tasks = append(tasks[:index], tasks[index+1:]...)
 			var task Tasks
 			_ = json.NewDecoder(r.Body).Decode(&task)
@@ -112,7 +102,6 @@ func updateTask(w http.ResponseWriter, r *http.Request) {
 
 func handleRoutes() {
 	router := mux.NewRouter()
-
 	router.HandleFunc("/", homePage).Methods("GET")
 	router.HandleFunc("/gettask/", gettask).Queries("id", "{id}").Methods("GET")
 	router.HandleFunc("/gettasks", getTasks).Methods("GET")
